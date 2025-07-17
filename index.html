@@ -3,108 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pakistani Weather – Clean Forecast</title>
+  <title>Weather Forecast - Pakistan</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #e0f7fa;
       margin: 0;
-      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      color: #333;
       text-align: center;
     }
 
-    h2 {
-      margin-bottom: 15px;
+    h1 {
+      margin-top: 20px;
     }
 
     .search-container {
-      margin-bottom: 20px;
+      margin: 20px;
     }
 
     input[type="text"] {
       padding: 10px;
-      font-size: 16px;
-      width: 260px;
-      max-width: 90%;
-      border: 1px solid #ccc;
+      width: 250px;
       border-radius: 5px;
+      border: 1px solid #aaa;
+      font-size: 16px;
     }
 
     button {
-      padding: 10px 14px;
-      margin-left: 5px;
-      font-size: 15px;
-      cursor: pointer;
+      padding: 10px 15px;
+      margin: 5px;
       background-color: #0288d1;
       color: white;
       border: none;
       border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
     }
 
-    #unitToggle {
-      margin: 10px auto;
+    .toggle {
+      margin-top: 10px;
     }
 
-    .weather-container {
-      max-width: 1000px;
-      margin: auto;
+    .weather-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .current-weather, .forecast {
+    .current, .forecast {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
+      gap: 15px;
+      margin: 20px;
     }
 
     .card {
       background: white;
-      padding: 15px;
       border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 15px;
       width: 180px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
 
     .card img {
       width: 60px;
-      height: 60px;
-    }
-
-    .card h4, .card h3 {
-      margin: 10px 0 5px;
-    }
-
-    .card p {
-      margin: 5px 0;
-      font-size: 14px;
     }
 
     @media (max-width: 600px) {
       .card {
         width: 90%;
       }
+
+      input[type="text"] {
+        width: 80%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h2>Pakistani Weather – Current & 7-Day Forecast</h2>
+  <h1>Weather Forecast - Pakistan</h1>
 
   <div class="search-container">
-    <input type="text" id="cityInput" placeholder="Enter city name">
+    <input type="text" id="cityInput" placeholder="Enter city (e.g. Lahore)">
     <button onclick="getWeather()">Search</button>
     <button onclick="getLocationWeather()">📍 Auto-detect</button>
+    <div class="toggle">
+      <label>
+        <input type="checkbox" id="unitSwitch" onchange="toggleUnits()"> Show in Fahrenheit
+      </label>
+    </div>
   </div>
 
-  <div id="unitToggle">
-    <label>
-      <input type="checkbox" id="unitSwitch" onchange="toggleUnits()"> Show in Fahrenheit
-    </label>
-  </div>
-
-  <div class="weather-container">
-    <div id="currentWeather" class="current-weather"></div>
+  <div class="weather-section">
+    <div id="currentWeather" class="current"></div>
     <div id="forecast" class="forecast"></div>
   </div>
 
@@ -114,7 +107,7 @@
 
     async function getWeather(city = null) {
       const query = city || document.getElementById('cityInput').value;
-      if (!query) return alert("Please enter a city.");
+      if (!query) return alert("Please enter a city name.");
 
       const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${query}&days=7&aqi=no&alerts=no`;
 
@@ -131,10 +124,10 @@
 
         const currentHTML = `
           <div class="card">
-            <h3>Now: ${location}</h3>
-            <img src="https:${cw.condition.icon}" alt="${cw.condition.text}">
+            <h3>${location}</h3>
+            <img src="https:${cw.condition.icon}" alt="">
             <p><strong>${cw.condition.text}</strong></p>
-            <p>Temp: ${temp}°${currentUnit}</p>
+            <p>Temperature: ${temp}°${currentUnit}</p>
             <p>Humidity: ${cw.humidity}%</p>
             <p>Wind: ${wind}</p>
           </div>
@@ -148,12 +141,11 @@
           forecastHTML += `
             <div class="card">
               <h4>${day.date}</h4>
-              <img src="https:${d.condition.icon}" alt="${d.condition.text}">
-              <p><strong>${d.condition.text}</strong></p>
+              <img src="https:${d.condition.icon}" alt="">
+              <p>${d.condition.text}</p>
               <p>Avg: ${isF ? d.avgtemp_f : d.avgtemp_c}°${currentUnit}</p>
-              <p>Max: ${isF ? d.maxtemp_f : d.maxtemp_c}°${currentUnit}</p>
-              <p>Min: ${isF ? d.mintemp_f : d.mintemp_c}°${currentUnit}</p>
-              <p>Humidity: ${d.avghumidity}%</p>
+              <p>Max: ${isF ? d.maxtemp_f : d.maxtemp_c}°</p>
+              <p>Min: ${isF ? d.mintemp_f : d.mintemp_c}°</p>
             </div>`;
         });
         document.getElementById('forecast').innerHTML = forecastHTML;
@@ -178,14 +170,14 @@
             const lon = pos.coords.longitude;
             getWeather(`${lat},${lon}`);
           },
-          () => alert("Unable to get your location.")
+          () => alert("Location access denied.")
         );
       } else {
-        alert("Geolocation is not supported by your browser.");
+        alert("Geolocation not supported.");
       }
     }
 
-    // Auto-detect on page load
+    // Load user location weather on first visit
     window.onload = () => getLocationWeather();
   </script>
 
