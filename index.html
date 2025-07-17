@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>10-Day Weather Forecast - Pakistani Cities</title>
+  <title>7-Day Weather Forecast - Pakistani Cities</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #e0f7fa;
+      background-color: #f0f8ff;
       text-align: center;
       margin: 0;
       padding: 20px;
@@ -23,18 +23,19 @@
     }
 
     .forecast {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
+      margin-top: 20px;
     }
 
     .day {
-      background-color: #ffffff;
+      background-color: white;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       padding: 15px;
+      width: 150px;
     }
 
     .day img {
@@ -47,14 +48,14 @@
     }
 
     .day p {
-      margin: 4px 0;
+      margin: 5px 0;
       font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-  <h2>10-Day Weather Forecast for Pakistani Cities</h2>
+  <h2>7-Day Weather Forecast for Pakistani Cities</h2>
 
   <select id="citySelector" onchange="getWeather()">
     <option value="">-- Select a City --</option>
@@ -65,6 +66,21 @@
     <option value="Quetta">Quetta</option>
     <option value="Multan">Multan</option>
     <option value="Faisalabad">Faisalabad</option>
+    <option value="Sialkot">Sialkot</option>
+    <option value="Gujranwala">Gujranwala</option>
+    <option value="Hyderabad">Hyderabad</option>
+    <option value="Sukkur">Sukkur</option>
+    <option value="Bahawalpur">Bahawalpur</option>
+    <option value="Sargodha">Sargodha</option>
+    <option value="Abbottabad">Abbottabad</option>
+    <option value="Mardan">Mardan</option>
+    <option value="Mirpur">Mirpur</option>
+    <option value="Muzaffarabad">Muzaffarabad</option>
+    <option value="Gilgit">Gilgit</option>
+    <option value="Skardu">Skardu</option>
+    <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+    <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
+    <option value="Dera Ismail Khan">Dera Ismail Khan</option>
   </select>
 
   <div id="forecast" class="forecast"></div>
@@ -79,7 +95,7 @@
 
       if (!city) return;
 
-      const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${city}&days=10&aqi=no&alerts=no`;
+      const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${city}&days=7&aqi=no&alerts=no`;
 
       try {
         const res = await fetch(url);
@@ -92,16 +108,16 @@
               <h4>${day.date}</h4>
               <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
               <p><strong>${day.day.condition.text}</strong></p>
-              <p>🌡️ Avg: ${day.day.avgtemp_c} °C</p>
-              <p>🌞 Max: ${day.day.maxtemp_c} °C</p>
-              <p>🌙 Min: ${day.day.mintemp_c} °C</p>
-              <p>💧 Humidity: ${day.day.avghumidity}%</p>
+              <p>Avg: ${day.day.avgtemp_c} °C</p>
+              <p>Max: ${day.day.maxtemp_c} °C</p>
+              <p>Min: ${day.day.mintemp_c} °C</p>
+              <p>Humidity: ${day.day.avghumidity}%</p>
             </div>`;
           forecastDiv.innerHTML += html;
         });
 
       } catch (err) {
-        forecastDiv.innerHTML = '<p>⚠️ Unable to fetch weather data.</p>';
+        forecastDiv.innerHTML = '<p>⚠️ Could not fetch weather data.</p>';
         console.error(err);
       }
     }
