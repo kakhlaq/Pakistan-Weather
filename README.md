@@ -1,2 +1,2 @@
 # pakistan-weather
-7-day forecast for Pakistani cities
+10-day forecast for Pakistani cities
