@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pakistani City Weather Forecast | Travel Agency</title>
+  <style>
+    /* (All your existing styles stay unchanged, reused as-is) */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.2em;
+    }
+
+    .tagline {
+      font-style: italic;
+      margin-top: 10px;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .city-selector {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .forecast-container {
+      flex: 3;
+      min-width: 300px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .forecast-card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .forecast-date {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .weather-icon {
+      font-size: 2.5em;
+      margin: 10px 0;
+    }
+
+    .temp {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .min-temp {
+      color: #3498db;
+    }
+
+    .max-temp {
+      color: #e74c3c;
+    }
+
+    .weather-desc {
+      font-size: 0.9em;
+      margin-top: 5px;
+      color: #7f8c8d;
+    }
+
+    .booking-cta {
+      background-color: #27ae60;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .booking-cta:hover {
+      background-color: #219653;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-style: italic;
+      color: #7f8c8d;
+    }
+
+    .error {
+      color: #e74c3c;
+      text-align: center;
+      padding: 20px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pakistani City Weather Forecast</h1>
+    <p class="tagline">Plan your perfect local getaway with our 7-day weather forecasts</p>
+  </header>
+
+  <div class="container">
+    <div class="city-selector">
+      <h2>Select a City</h2>
+      <select id="citySelect">
+        <option value="">-- Choose a Pakistani City --</option>
+        <option value="Islamabad,33.6844,73.0479">Islamabad</option>
+        <option value="Lahore,31.5204,74.3587">Lahore</option>
+        <option value="Karachi,24.8607,67.0011">Karachi</option>
+        <option value="Peshawar,34.0150,71.5805">Peshawar</option>
+        <option value="Quetta,30.1798,66.9750">Quetta</option>
+        <option value="Multan,30.1575,71.5249">Multan</option>
+        <option value="Faisalabad,31.4504,73.1350">Faisalabad</option>
+        <option value="Hyderabad,25.3960,68.3578">Hyderabad</option>
+        <option value="Gujranwala,32.1877,74.1945">Gujranwala</option>
+        <option value="Rawalpindi,33.5651,73.0169">Rawalpindi</option>
+        <option value="Sialkot,32.4945,74.5229">Sialkot</option>
+        <option value="Abbottabad,34.1463,73.2117">Abbottabad</option>
+        <option value="Bahawalpur,29.3956,71.6836">Bahawalpur</option>
+        <option value="Sukkur,27.7052,68.8574">Sukkur</option>
+        <option value="Mirpur,33.1478,73.7519">Mirpur</option>
+      </select>
+      <button id="getForecast">Get 7-Day Forecast</button>
+
+      <div class="booking-cta" onclick="location.href='#';">
+        <h3>Ready to Explore Pakistan?</h3>
+        <p>Find great travel deals for local adventures!</p>
+      </div>
+    </div>
+
+    <div class="forecast-container">
+      <h2>7-Day Weather Forecast</h2>
+      <div id="forecastResults">
+        <p>Please select a city to view the weather forecast.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('getForecast').addEventListener('click', function() {
+      const citySelect = document.getElementById('citySelect');
+      const selectedValue = citySelect.value;
+
+      if (!selectedValue) {
+        alert('Please select a city first.');
+        return;
+      }
+
+      const [cityName, lat, lon] = selectedValue.split(',');
+      fetchWeatherForecast(lat, lon, cityName);
+    });
+
+    function fetchWeatherForecast(latitude, longitude, cityName) {
+      const forecastResults = document.getElementById('forecastResults');
+      forecastResults.innerHTML = '<div class="loading">Loading weather data...</div>';
+
+      const apiUrl = `https://www.7timer.info/bin/api.pl?lon=${longitude}&lat=${latitude}&product=civillight&output=json`;
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          displayForecast(data, cityName);
+        })
+        .catch(error => {
+          console.error('Error fetching weather data:', error);
+          forecastResults.innerHTML = `<div class="error">Failed to load weather data. Please try again later.</div>`;
+        });
+    }
+
+    function displayForecast(weatherData, cityName) {
+      const forecastResults = document.getElementById('forecastResults');
+
+      if (!weatherData.dataseries || weatherData.dataseries.length === 0) {
+        forecastResults.innerHTML = `<div class="error">No weather data available for ${cityName}.</div>`;
+        return;
+      }
+
+      let html = `<h3>${cityName} - Next 7 Days</h3><div class="forecast-grid">`;
+
+      weatherData.dataseries.forEach(day => {
+        const date = new Date(
+          parseInt(day.date.toString().substring(0, 4)),
+          parseInt(day.date.toString().substring(4, 6)) - 1,
+          parseInt(day.date.toString().substring(6, 8))
+        );
+
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const monthDay = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        const weatherIcon = getWeatherIcon(day.weather);
+        const weatherDesc = getWeatherDescription(day.weather);
+
+        html += `
+          <div class="forecast-card">
+            <div class="forecast-date">${dayName}<br>${monthDay}</div>
+            <div class="weather-icon">${weatherIcon}</div>
+            <div class="temp">
+              <span class="max-temp">${day.temp2m.max}°C</span> / 
+              <span class="min-temp">${day.temp2m.min}°C</span>
+            </div>
+            <div class="weather-desc">${weatherDesc}</div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      forecastResults.innerHTML = html;
+    }
+
+    function getWeatherIcon(code) {
+      switch (code) {
+        case 'clear': return '☀️';
+        case 'pcloudy': return '⛅';
+        case 'mcloudy': return '☁️';
+        case 'cloudy': return '☁️';
+        case 'humid': return '🌫️';
+        case 'lightrain': return '🌧️';
+        case 'oshower':
+        case 'ishower': return '🌦️';
+        case 'lightsnow':
+        case 'snow': return '❄️';
+        case 'rain': return '🌧️';
+        case 'rainsnow': return '🌨️';
+        case 'ts': return '⚡';
+        case 'tsrain': return '⛈️';
+        default: return '🌈';
+      }
+    }
+
+    function getWeatherDescription(code) {
+      const descriptions = {
+        clear: 'Clear skies',
+        pcloudy: 'Partly cloudy',
+        mcloudy: 'Mostly cloudy',
+        cloudy: 'Cloudy',
+        humid: 'Humid',
+        lightrain: 'Light rain',
+        oshower: 'Occasional showers',
+        ishower: 'Isolated showers',
+        lightsnow: 'Light snow',
+        rain: 'Rain',
+        snow: 'Snow',
+        rainsnow: 'Rain and snow',
+        ts: 'Thunderstorm',
+        tsrain: 'Thunderstorm with rain'
+      };
+      return descriptions[code] || 'Variable conditions';
+    }
+  </script>
+</body>
+</html>
