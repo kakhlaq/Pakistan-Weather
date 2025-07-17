@@ -4,36 +4,12 @@
   <meta charset="UTF-8">
   <title>10-Day Weather Forecast - Pakistani Cities</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f0f8ff;
-    }
-    h2 {
-      margin-top: 20px;
-    }
-    select {
-      padding: 10px;
-      font-size: 16px;
-    }
-    .forecast {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-    .day {
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin: 10px;
-      padding: 10px;
-      width: 140px;
-    }
-    .day img {
-      width: 64px;
-      height: 64px;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; background: #f0f8ff; }
+    h2 { margin-top: 20px; }
+    select { padding: 10px; font-size: 16px; }
+    .forecast { display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+    .day { background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: 10px; padding: 10px; width: 140px; }
+    .day img { width: 64px; height: 64px; }
   </style>
 </head>
 <body>
@@ -41,14 +17,14 @@
   <h2>10-Day Weather Forecast for Pakistani Cities</h2>
 
   <select id="citySelector" onchange="getWeather()">
-    <option value="">--Select a City--</option>
-    <option value="Islamabad">Islamabad</option>
-    <option value="Lahore">Lahore</option>
-    <option value="Karachi">Karachi</option>
-    <option value="Peshawar">Peshawar</option>
-    <option value="Quetta">Quetta</option>
-    <option value="Multan">Multan</option>
-    <option value="Faisalabad">Faisalabad</option>
+    <option value="">-- Select a City --</option>
+    <option>Islamabad</option>
+    <option>Lahore</option>
+    <option>Karachi</option>
+    <option>Peshawar</option>
+    <option>Quetta</option>
+    <option>Multan</option>
+    <option>Faisalabad</option>
   </select>
 
   <div id="forecast" class="forecast"></div>
@@ -66,9 +42,8 @@
       const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${city}&days=10&aqi=no&alerts=no`;
 
       try {
-        const response = await fetch(url);
-        const data = await response.json();
-
+        const res = await fetch(url);
+        const data = await res.json();
         const days = data.forecast.forecastday;
 
         days.forEach(day => {
@@ -77,20 +52,20 @@
               <h4>${day.date}</h4>
               <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
               <p><strong>${day.day.condition.text}</strong></p>
-              <p>🌡️ ${day.day.avgtemp_c} °C</p>
+              <p>🌡️ Avg: ${day.day.avgtemp_c} °C</p>
               <p>💧 Humidity: ${day.day.avghumidity}%</p>
-              <p>🌞 Max: ${day.day.maxtemp_c}°C</p>
-              <p>🌙 Min: ${day.day.mintemp_c}°C</p>
-            </div>
-          `;
+              <p>🌞 High: ${day.day.maxtemp_c}°C</p>
+              <p>🌙 Low: ${day.day.mintemp_c}°C</p>
+            </div>`;
           forecastDiv.innerHTML += html;
         });
 
       } catch (err) {
-        forecastDiv.innerHTML = '<p>⚠️ Failed to fetch weather data.</p>';
+        forecastDiv.innerHTML = '<p>⚠️ Unable to fetch weather data.</p>';
         console.error(err);
       }
     }
   </script>
+
 </body>
 </html>
