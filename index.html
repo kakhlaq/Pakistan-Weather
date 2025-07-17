@@ -135,6 +135,42 @@
             background-color: #219653;
         }
         
+        .app-downloads {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .app-downloads h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .app-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .app-button {
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        
+        .app-button:hover {
+            background-color: #2980b9;
+        }
+        
         .loading {
             text-align: center;
             padding: 20px;
@@ -151,6 +187,9 @@
         
         @media (max-width: 768px) {
             .container {
+                flex-direction: column;
+            }
+            .app-buttons {
                 flex-direction: column;
             }
         }
@@ -193,6 +232,18 @@
             <div class="booking-cta" onclick="location.href='#';">
                 <h3>Ready to Book Your Trip?</h3>
                 <p>Get the best deals on flights and hotels for your selected destination!</p>
+            </div>
+
+            <div class="app-downloads">
+                <h3>Download Our Mobile Apps</h3>
+                <div class="app-buttons">
+                    <a href="https://play.google.com/store/apps/details?id=com.bookkaru" class="app-button" target="_blank">
+                        Download Book Karu
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.macropaks.bookme" class="app-button" target="_blank">
+                        Download Book Me
+                    </a>
+                </div>
             </div>
         </div>
         
