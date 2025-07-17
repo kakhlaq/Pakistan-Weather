@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pakistani City Weather Forecast | Travel Agency</title>
   <style>
-    /* (All your existing styles stay unchanged, reused as-is) */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       line-height: 1.6;
@@ -160,7 +159,7 @@
 <body>
   <header>
     <h1>Pakistani City Weather Forecast</h1>
-    <p class="tagline">Plan your perfect local getaway with our 7-day weather forecasts</p>
+    <p class="tagline">Plan your perfect local getaway with our 10-day weather forecasts</p>
   </header>
 
   <div class="container">
@@ -184,7 +183,7 @@
         <option value="Sukkur,27.7052,68.8574">Sukkur</option>
         <option value="Mirpur,33.1478,73.7519">Mirpur</option>
       </select>
-      <button id="getForecast">Get 7-Day Forecast</button>
+      <button id="getForecast">Get 10-Day Forecast</button>
 
       <div class="booking-cta" onclick="location.href='#';">
         <h3>Ready to Explore Pakistan?</h3>
@@ -193,7 +192,7 @@
     </div>
 
     <div class="forecast-container">
-      <h2>7-Day Weather Forecast</h2>
+      <h2>10-Day Weather Forecast</h2>
       <div id="forecastResults">
         <p>Please select a city to view the weather forecast.</p>
       </div>
@@ -201,7 +200,7 @@
   </div>
 
   <script>
-    document.getElementById('getForecast').addEventListener('click', function() {
+    document.getElementById('getForecast').addEventListener('click', function () {
       const citySelect = document.getElementById('citySelect');
       const selectedValue = citySelect.value;
 
@@ -242,9 +241,9 @@
         return;
       }
 
-      let html = `<h3>${cityName} - Next 7 Days</h3><div class="forecast-grid">`;
+      let html = `<h3>${cityName} - Next 10 Days</h3><div class="forecast-grid">`;
 
-      weatherData.dataseries.forEach(day => {
+      weatherData.dataseries.slice(0, 10).forEach(day => {
         const date = new Date(
           parseInt(day.date.toString().substring(0, 4)),
           parseInt(day.date.toString().substring(4, 6)) - 1,
