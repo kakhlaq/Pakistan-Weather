@@ -4,12 +4,52 @@
   <meta charset="UTF-8">
   <title>10-Day Weather Forecast - Pakistani Cities</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f0f8ff; }
-    h2 { margin-top: 20px; }
-    select { padding: 10px; font-size: 16px; }
-    .forecast { display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-    .day { background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: 10px; padding: 10px; width: 140px; }
-    .day img { width: 64px; height: 64px; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e0f7fa;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .forecast {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .day {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+    }
+
+    .day img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .day h4 {
+      margin: 10px 0 5px;
+    }
+
+    .day p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -18,13 +58,13 @@
 
   <select id="citySelector" onchange="getWeather()">
     <option value="">-- Select a City --</option>
-    <option>Islamabad</option>
-    <option>Lahore</option>
-    <option>Karachi</option>
-    <option>Peshawar</option>
-    <option>Quetta</option>
-    <option>Multan</option>
-    <option>Faisalabad</option>
+    <option value="Islamabad">Islamabad</option>
+    <option value="Lahore">Lahore</option>
+    <option value="Karachi">Karachi</option>
+    <option value="Peshawar">Peshawar</option>
+    <option value="Quetta">Quetta</option>
+    <option value="Multan">Multan</option>
+    <option value="Faisalabad">Faisalabad</option>
   </select>
 
   <div id="forecast" class="forecast"></div>
@@ -53,9 +93,9 @@
               <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
               <p><strong>${day.day.condition.text}</strong></p>
               <p>🌡️ Avg: ${day.day.avgtemp_c} °C</p>
+              <p>🌞 Max: ${day.day.maxtemp_c} °C</p>
+              <p>🌙 Min: ${day.day.mintemp_c} °C</p>
               <p>💧 Humidity: ${day.day.avghumidity}%</p>
-              <p>🌞 High: ${day.day.maxtemp_c}°C</p>
-              <p>🌙 Low: ${day.day.mintemp_c}°C</p>
             </div>`;
           forecastDiv.innerHTML += html;
         });
