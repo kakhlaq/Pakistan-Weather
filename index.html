@@ -3,50 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pakistani Weather - Current + 7-Day Forecast</title>
+  <title>Pakistani Weather – Clean Forecast</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #e0f7fa;
+      font-family: 'Segoe UI', sans-serif;
+      background: #e0f7fa;
       margin: 0;
       padding: 20px;
       text-align: center;
     }
 
     h2 {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .search-container {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     input[type="text"] {
       padding: 10px;
       font-size: 16px;
-      width: 250px;
-      max-width: 80%;
+      width: 260px;
+      max-width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     button {
-      padding: 10px 15px;
-      font-size: 16px;
+      padding: 10px 14px;
+      margin-left: 5px;
+      font-size: 15px;
       cursor: pointer;
       background-color: #0288d1;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
     }
 
     #unitToggle {
       margin: 10px auto;
     }
 
-    .forecast, .current-weather {
+    .weather-container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .current-weather, .forecast {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -54,46 +58,38 @@
       margin-top: 20px;
     }
 
-    .day, .current {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .card {
+      background: white;
       padding: 15px;
+      border-radius: 10px;
       width: 180px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
 
-    .day img, .current img {
+    .card img {
       width: 60px;
       height: 60px;
     }
 
-    .day h4, .current h3 {
+    .card h4, .card h3 {
       margin: 10px 0 5px;
     }
 
-    .day p, .current p {
+    .card p {
       margin: 5px 0;
       font-size: 14px;
     }
 
     @media (max-width: 600px) {
-      .day, .current {
-        width: 100%;
-      }
-
-      input[type="text"] {
-        width: 100%;
-      }
-
-      button {
-        width: 100%;
+      .card {
+        width: 90%;
       }
     }
   </style>
 </head>
 <body>
 
-  <h2>Pakistani Weather – Current + 7-Day Forecast</h2>
+  <h2>Pakistani Weather – Current & 7-Day Forecast</h2>
 
   <div class="search-container">
     <input type="text" id="cityInput" placeholder="Enter city name">
@@ -103,62 +99,67 @@
 
   <div id="unitToggle">
     <label>
-      <input type="checkbox" id="unitSwitch" onchange="toggleUnits()">
-      Show in Fahrenheit
+      <input type="checkbox" id="unitSwitch" onchange="toggleUnits()"> Show in Fahrenheit
     </label>
   </div>
 
-  <div id="currentWeather" class="current-weather"></div>
-  <div id="forecast" class="forecast"></div>
+  <div class="weather-container">
+    <div id="currentWeather" class="current-weather"></div>
+    <div id="forecast" class="forecast"></div>
+  </div>
 
   <script>
     const API_KEY = 'a2d43c4785b841f083a54339251707';
-    let currentUnit = 'C'; // Default to Celsius
+    let currentUnit = 'C';
 
     async function getWeather(city = null) {
       const query = city || document.getElementById('cityInput').value;
-      if (!query) return alert("Please enter a city name.");
+      if (!query) return alert("Please enter a city.");
 
-      const isF = currentUnit === 'F';
       const url = `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${query}&days=7&aqi=no&alerts=no`;
+
       try {
         const res = await fetch(url);
         const data = await res.json();
 
-        // Current weather
         const cw = data.current;
         const location = data.location.name;
+
+        const isF = currentUnit === 'F';
+        const temp = isF ? cw.temp_f : cw.temp_c;
+        const wind = isF ? cw.wind_mph + ' mph' : cw.wind_kph + ' km/h';
+
         const currentHTML = `
-          <div class="current">
-            <h3>Current Weather in ${location}</h3>
+          <div class="card">
+            <h3>Now: ${location}</h3>
             <img src="https:${cw.condition.icon}" alt="${cw.condition.text}">
             <p><strong>${cw.condition.text}</strong></p>
-            <p>Temperature: ${isF ? cw.temp_f + ' °F' : cw.temp_c + ' °C'}</p>
+            <p>Temp: ${temp}°${currentUnit}</p>
             <p>Humidity: ${cw.humidity}%</p>
-            <p>Wind: ${isF ? cw.wind_mph + ' mph' : cw.wind_kph + ' km/h'}</p>
-          </div>`;
+            <p>Wind: ${wind}</p>
+          </div>
+        `;
         document.getElementById('currentWeather').innerHTML = currentHTML;
 
-        // Forecast
         const days = data.forecast.forecastday;
         let forecastHTML = '';
         days.forEach(day => {
+          const d = day.day;
           forecastHTML += `
-            <div class="day">
+            <div class="card">
               <h4>${day.date}</h4>
-              <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
-              <p><strong>${day.day.condition.text}</strong></p>
-              <p>Avg: ${isF ? day.day.avgtemp_f : day.day.avgtemp_c} °${isF ? 'F' : 'C'}</p>
-              <p>Max: ${isF ? day.day.maxtemp_f : day.day.maxtemp_c} °${isF ? 'F' : 'C'}</p>
-              <p>Min: ${isF ? day.day.mintemp_f : day.day.mintemp_c} °${isF ? 'F' : 'C'}</p>
-              <p>Humidity: ${day.day.avghumidity}%</p>
+              <img src="https:${d.condition.icon}" alt="${d.condition.text}">
+              <p><strong>${d.condition.text}</strong></p>
+              <p>Avg: ${isF ? d.avgtemp_f : d.avgtemp_c}°${currentUnit}</p>
+              <p>Max: ${isF ? d.maxtemp_f : d.maxtemp_c}°${currentUnit}</p>
+              <p>Min: ${isF ? d.mintemp_f : d.mintemp_c}°${currentUnit}</p>
+              <p>Humidity: ${d.avghumidity}%</p>
             </div>`;
         });
         document.getElementById('forecast').innerHTML = forecastHTML;
 
       } catch (err) {
         console.error(err);
-        document.getElementById('currentWeather').innerHTML = '';
         document.getElementById('forecast').innerHTML = '<p>⚠️ Unable to fetch weather data.</p>';
       }
     }
@@ -177,17 +178,15 @@
             const lon = pos.coords.longitude;
             getWeather(`${lat},${lon}`);
           },
-          () => alert("Unable to get location.")
+          () => alert("Unable to get your location.")
         );
       } else {
-        alert("Geolocation not supported by this browser.");
+        alert("Geolocation is not supported by your browser.");
       }
     }
 
-    // Auto-detect weather on page load
-    window.onload = () => {
-      getLocationWeather();
-    };
+    // Auto-detect on page load
+    window.onload = () => getLocationWeather();
   </script>
 
 </body>
